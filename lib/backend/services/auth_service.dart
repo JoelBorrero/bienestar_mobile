@@ -1,14 +1,20 @@
+import 'dart:convert';
+
+import 'package:bienestar_mobile/backend/models/response.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:bienestar_mobile/backend/models/user.dart';
 
-
 class AuthService with ChangeNotifier {
   final _storage = const FlutterSecureStorage();
-  late User user;
-  String host = 'https://33c0-2800-484-188b-7712-496a-9254-487f-b581.ngrok.io';
+  User? _user;
+  String host = '87b6-3-231-165-123.ngrok.io';
+
+  User? get user {
+    return _user ?? loadUser();
+  }
 
   Future<String> getToken() async {
     final token = await _storage.read(key: 'token');
@@ -21,27 +27,38 @@ class AuthService with ChangeNotifier {
       uri,
       body: {"email": email, "password": password},
     );
-
-    if (resp.statusCode == 200) {
-      user = userFromJson(resp.body);
-      // await this._saveToken(loginResponse.token);
-      return {"success": true};
+    APIResponse response = apiResponseFromBytes(
+      resp.bodyBytes,
+      resp.statusCode,
+    );
+    if (response.success) {
+      await _saveUser(resp.body);
+      response.data = user.toString();
     } else {
-      print(resp);
-      return {"success": false, "data": resp.body};
+      response.data = "Error";
     }
+    return response;
   }
 
-  Future isLoggedIn() async {
-    final token = await _storage.read(key: 'token');
-    return token;
+  loadUser() {
+    final userStr = _storage.read(key: 'user');
+    userStr.then((value) {
+      if (value != null) {
+        _user = User.fromJson(jsonDecode(value));
+        notifyListeners();
+      }
+    });
   }
 
-  Future _saveToken(String token) async {
-    return await _storage.write(key: 'token', value: token);
+  Future _saveUser(String userStr) async {
+    _user = userFromJson(userStr);
+    notifyListeners();
+    return await _storage.write(key: 'user', value: userStr);
   }
 
   Future logout() async {
-    await _storage.delete(key: 'token');
+    await _storage.delete(key: 'user');
+    _user = null;
+    notifyListeners();
   }
 }

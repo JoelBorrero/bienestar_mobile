@@ -8,17 +8,26 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final IconData? icon;
   final TextInputType? keyboardType;
-  const CustomTextField(
-      {super.key,
-      required this.controller,
-      required this.label,
-      this.icon,
-      this.keyboardType});
+  final int? maxLength;
+  final Size? size;
+  final double? margin;
+  final String? Function(String value)? validator;
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.icon,
+    this.keyboardType,
+    this.maxLength,
+    this.size,
+    this.margin,
+    this.validator,
+  });
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return TextField(
+    Widget textField = TextFormField(
       controller: controller,
       decoration: InputDecoration(
         icon: icon != null ? Icon(icon, color: theme.primaryColorDark) : null,
@@ -27,6 +36,16 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: inputBorder(),
       ),
       keyboardType: keyboardType,
+      maxLength: maxLength,
+      obscureText: keyboardType == TextInputType.visiblePassword,
     );
+    return size == null
+        ? textField
+        : Container(
+            width: size!.width,
+            height: size!.height,
+            margin: EdgeInsets.symmetric(vertical: margin ?? 20),
+            child: textField,
+          );
   }
 }

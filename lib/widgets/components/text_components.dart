@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/utils/themes.dart';
 
+
 Text textH1(String text, {bool dark = true, double? fontSize}) {
   return Text(text,
       style: lightTheme.textTheme.titleLarge?.copyWith(

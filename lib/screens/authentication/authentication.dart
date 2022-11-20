@@ -1,4 +1,6 @@
-import 'package:bienestar_mobile/screens/authentication/password_recovery.dart';
+import 'package:bienestar_mobile/screens/authentication/send_reset_code.dart';
+import 'package:bienestar_mobile/screens/authentication/set_new_password.dart';
+import 'package:bienestar_mobile/screens/authentication/validate_code.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +32,9 @@ class Authentication extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   Login(controller: _pageController),
-                  PasswordRecovery(controller: _pageController)
+                  SendResetCode(controller: _pageController),
+                  ValidateCode(controller: _pageController),
+                  SetNewPassword(controller: _pageController),
                 ],
               ),
             ),

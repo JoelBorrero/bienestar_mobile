@@ -1,3 +1,4 @@
+import 'package:bienestar_mobile/utils/constants.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +15,7 @@ class GradientButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [theme.primaryColorDark, theme.splashColor],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: gradient(theme),
         borderRadius: BorderRadius.circular(10),
       ),
       width: width,

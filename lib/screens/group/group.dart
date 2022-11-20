@@ -2,38 +2,37 @@ import 'package:bienestar_mobile/widgets/components/drawer.dart';
 import 'package:flutter/material.dart';
 
 import 'home.dart';
-import 'hours.dart';
+import 'activities.dart';
 
-List _list = [
+List _items = [
   {
     'text': 'Inicio',
     'icon': Icons.speed,
     'route': '/',
   },
   {
-    'text': 'Mis horas',
+    'text': 'Mis actividades',
     'icon': Icons.pending_actions_outlined,
-    'route': '/hours',
+    'route': '/activities',
   }
 ];
-MyDrawer drawer = MyDrawer(_list);
+MyDrawer drawer = MyDrawer(_items);
 
-class Promoter extends StatelessWidget {
-  const Promoter({super.key});
+class Group extends StatelessWidget {
+  const Group({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      // initialRoute: '/',
-      initialRoute: '/hours',
+      initialRoute: '/',
       onGenerateRoute: (RouteSettings settings) {
         WidgetBuilder builder;
         switch (settings.name) {
           case '/':
             builder = (BuildContext context) => Home(drawer);
             break;
-          case '/hours':
-            builder = (BuildContext context) => Hours(drawer);
+          case '/activities':
+            builder = (BuildContext context) => Activities(drawer);
             break;
           default:
             throw Exception('Invalid route: ${settings.name}');

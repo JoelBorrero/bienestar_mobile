@@ -9,12 +9,20 @@ import 'package:provider/provider.dart';
 
 dynamic _response;
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   final PageController controller;
-  Login({super.key, required this.controller});
+  const Login({super.key, required this.controller});
 
-  final TextEditingController _emailController = TextEditingController(),
-      _passwordController = TextEditingController();
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController =
+          TextEditingController(text: 'promotor@example.com'), _passwordController = TextEditingController(text: '123');
+          // TextEditingController(text: 'bk2@uninorte.edu.co'), _passwordController = TextEditingController(text: 'uninorte');
+
+  String? error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,28 +36,41 @@ class Login extends StatelessWidget {
         children: [
           textH1('Iniciar sesión\n'),
           CustomTextField(
-              controller: _emailController, label: 'Email', icon: Icons.email),
+            controller: _emailController,
+            label: 'Email',
+            icon: Icons.email,
+            keyboardType: TextInputType.emailAddress,
+          ),
           const SizedBox(height: 20),
           CustomTextField(
-              controller: _passwordController,
-              label: 'Contraseña',
-              icon: Icons.password),
+            controller: _passwordController,
+            label: 'Contraseña',
+            icon: Icons.password,
+            keyboardType: TextInputType.visiblePassword,
+          ),
           const SizedBox(height: 20),
           GradientButton(
             text: 'Login',
             onPressed: () async {
-              // _response = await authService.login("user@example.com", "123");
-              // if (_response.success) {
-              //   Navigator.pushNamed(context, "/promoter");
-              // }
-              print("object");
+              _response = await authService.login(
+                _emailController.text,
+                _passwordController.text,
+              );
+              if (!_response.success) {
+                setState(() {
+                  error = _response.error;
+                });
+              }
             },
           ),
-          const SizedBox(height: 50),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: textMedium(error ?? '', color: Colors.red),
+          ),
           textMedium('¿Olvidaste tu contraseña?'),
           TextButton(
             onPressed: () {
-              controller.nextPage(duration: duration, curve: curve);
+              widget.controller.nextPage(duration: duration, curve: curve);
             },
             child: const Text('Recupérala'),
           ),
