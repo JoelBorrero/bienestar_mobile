@@ -1,8 +1,9 @@
-import 'package:bienestar_mobile/widgets/components/drawer.dart';
 import 'package:flutter/material.dart';
 
-import 'home.dart';
+import 'package:bienestar_mobile/widgets/modules/drawer.dart';
+
 import 'activities.dart';
+import 'home.dart';
 
 List _items = [
   {

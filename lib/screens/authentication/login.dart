@@ -1,11 +1,11 @@
-import 'package:bienestar_mobile/backend/services/auth_service.dart';
-import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:bienestar_mobile/utils/themes.dart';
-import 'package:bienestar_mobile/widgets/components/custom_text_field.dart';
-import 'package:bienestar_mobile/widgets/components/gradient_button.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:bienestar_mobile/backend/services/auth_service.dart';
+import 'package:bienestar_mobile/utils/constants.dart';
+import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
+import 'package:bienestar_mobile/widgets/modules/gradient_button.dart';
+import 'package:bienestar_mobile/widgets/components/text_components.dart';
 
 dynamic _response;
 

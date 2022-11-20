@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:bienestar_mobile/screens/authentication/send_reset_code.dart';
 import 'package:bienestar_mobile/screens/authentication/set_new_password.dart';
 import 'package:bienestar_mobile/screens/authentication/validate_code.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:flutter/material.dart';
 
 import 'login.dart';
 

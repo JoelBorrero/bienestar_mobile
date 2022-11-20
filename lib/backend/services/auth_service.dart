@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:bienestar_mobile/backend/models/response.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:bienestar_mobile/backend/models/user.dart';
 
 class AuthService with ChangeNotifier {
   final _storage = const FlutterSecureStorage();
   User? _user;
-  String host = '87b6-3-231-165-123.ngrok.io';
+  String host = 'ec59-2800-484-188b-7712-d06a-d4ce-7726-db45.ngrok.io';
 
   User? get user {
     return _user ?? loadUser();

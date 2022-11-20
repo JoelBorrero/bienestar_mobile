@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:bienestar_mobile/widgets/components/custom_text_field.dart';
-import 'package:bienestar_mobile/widgets/components/date_picker.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/modules/custom_dropdown.dart';
+import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
+import 'package:bienestar_mobile/widgets/modules/date_picker.dart';
 
-DateTime _date = DateTime.now();
 List _hours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-int? _startHour, _endHour;
+DateTime _date = DateTime.now();
+int? _startHour = TimeOfDay.now().hour, _endHour;
+bool? _wasSupervised;
+Map<String, Object?> _answers = {
+  'date': _date,
+  'start_hour': _startHour,
+  'end_hour': _endHour,
+  'was_supervised': _wasSupervised,
+};
 
 class AddReport extends StatefulWidget {
   const AddReport({super.key});
@@ -16,9 +24,33 @@ class AddReport extends StatefulWidget {
 }
 
 class _AddReportState extends State<AddReport> {
+  void _onChanged(String key, dynamic value) {
+    setState(() {
+      _answers[key] = value;
+      switch (key) {
+        case 'date':
+          _date = value;
+          break;
+        case 'start_hour':
+          _startHour = value;
+          break;
+        case 'end_hour':
+          _endHour = value;
+          break;
+        case 'was_supervised':
+          _wasSupervised = value;
+          break;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    _startHour ??= TimeOfDay.now().hour;
     if (!_hours.sublist(0, _hours.length - 1).contains(_startHour)) {
       if (_startHour! < _hours[0]) {
         _startHour = _hours[0];
@@ -42,11 +74,7 @@ class _AddReportState extends State<AddReport> {
               textH2('Nuevo reporte\n'),
               DatePicker(
                 date: _date,
-                updateDate: (DateTime date) {
-                  setState(() {
-                    _date = date;
-                  });
-                },
+                updateDate: (date) => _onChanged('date', date),
               ),
               Row(children: [
                 Icon(Icons.alarm, size: 25, color: theme.primaryColorDark),
@@ -66,11 +94,7 @@ class _AddReportState extends State<AddReport> {
                       )
                       .toList()
                       .sublist(0, _hours.length - 1),
-                  onChanged: (h) {
-                    setState(() {
-                      _startHour = h as int;
-                    });
-                  },
+                  onChanged: (hour) => _onChanged('start_hour', hour),
                 ),
                 DropdownButton(
                   value: _endHour,
@@ -87,15 +111,22 @@ class _AddReportState extends State<AddReport> {
                       )
                       .toList()
                       .sublist(1),
-                  onChanged: (h) {
-                    setState(() {
-                      _endHour = h as int;
-                    });
-                  },
+                  onChanged: (hour) => _onChanged('end_hour', hour),
                 ),
-                textMedium('${_endHour! - _startHour!} hora${_endHour! - _startHour! > 1 ? 's' : ''}',
+                textMedium(
+                    '    ${_endHour! - _startHour!} hora${_endHour! - _startHour! > 1 ? 's' : ''}',
                     color: theme.primaryColorDark),
               ]),
+              CustomDropdown(
+                icon: Icons.supervisor_account,
+                label: '¿Fue supervisado?',
+                items: const [
+                  {'value': true, 'label': 'Sí'},
+                  {'value': false, 'label': 'No'}
+                ],
+                value: _wasSupervised,
+                onChanged: (b) => _onChanged('was_supervised', b),
+              ),
               CustomTextField(
                 controller: callController,
                 label: 'Número de llamados de atención',

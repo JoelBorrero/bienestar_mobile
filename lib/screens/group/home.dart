@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:bienestar_mobile/backend/models/user.dart';
 import 'package:bienestar_mobile/backend/services/auth_service.dart';
-import 'package:bienestar_mobile/widgets/components/drawer.dart';
-import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:flutter/material.dart';
-
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:provider/provider.dart';
+import 'package:bienestar_mobile/widgets/modules/drawer.dart';
 
 class Home extends StatelessWidget {
   final MyDrawer drawer;

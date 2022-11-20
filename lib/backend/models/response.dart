@@ -7,11 +7,19 @@ APIResponse apiResponseFromBytes(Uint8List str, int statusCode) =>
       statusCode,
     );
 
-APIResponse apiResponseFromJson(String str, int statusCode) =>
-    APIResponse.fromJson(
-      json.decode(str),
-      statusCode,
-    );
+APIResponse apiResponseFromJson(String str, int statusCode) {
+  dynamic body;
+  try {
+    body = json.decode(str);
+  } catch (e) {
+    body = '{"error": "$e", "success": false}';
+    statusCode = 400;
+  }
+  return APIResponse.fromJson(
+    body,
+    statusCode,
+  );
+}
 
 String apiResponseToJson(APIResponse data) => json.encode(data.toJson());
 

@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:bienestar_mobile/utils/constants.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:flutter/material.dart';
 
 class GradientButton extends StatelessWidget {
   final String text;

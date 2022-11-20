@@ -1,12 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:bienestar_mobile/backend/models/user.dart';
 import 'package:bienestar_mobile/backend/services/auth_service.dart';
 import 'package:bienestar_mobile/screens/promoter/add_report.dart';
-import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:bienestar_mobile/widgets/components/drawer.dart';
-import 'package:flutter/material.dart';
-
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:provider/provider.dart';
+import 'package:bienestar_mobile/widgets/modules/drawer.dart';
 
 class Hours extends StatelessWidget {
   final MyDrawer drawer;
@@ -27,7 +26,7 @@ class Hours extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () =>
-              showModalBottomSheet(context: context, builder: (context) => AddReport()),
+              showModalBottomSheet(context: context, builder: (context) => const AddReport()),
           backgroundColor: theme.primaryColor,
           child: const Icon(Icons.add),
         ),
