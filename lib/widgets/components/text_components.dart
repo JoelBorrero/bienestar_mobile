@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/utils/themes.dart';
 
-
 Text textH1(String text, {bool dark = true, double? fontSize}) {
   return Text(text,
       style: lightTheme.textTheme.titleLarge?.copyWith(
-        fontSize: fontSize,
+          fontSize: fontSize,
           color: dark
               ? lightTheme.primaryColorDark
               : lightTheme.scaffoldBackgroundColor));
@@ -29,13 +28,14 @@ Text textH3(String text, {bool dark = true}) {
 }
 
 Text textSmall(String text,
-    {bool dark = true, TextAlign textAlign = TextAlign.center}) {
+    {bool dark = true, TextAlign textAlign = TextAlign.center, Color? color}) {
   return Text(
     text,
     style: lightTheme.textTheme.bodySmall?.copyWith(
-        color: dark
-            ? lightTheme.primaryColorDark
-            : lightTheme.scaffoldBackgroundColor),
+        color: color ??
+            (dark
+                ? lightTheme.primaryColorDark
+                : lightTheme.scaffoldBackgroundColor)),
     textAlign: textAlign,
   );
 }

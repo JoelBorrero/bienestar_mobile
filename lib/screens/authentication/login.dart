@@ -1,3 +1,4 @@
+import 'package:bienestar_mobile/backend/models/response.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,6 @@ import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
 import 'package:bienestar_mobile/widgets/modules/gradient_button.dart';
 import 'package:bienestar_mobile/widgets/components/text_components.dart';
 
-dynamic _response;
 
 class Login extends StatefulWidget {
   final PageController controller;
@@ -52,13 +52,13 @@ class _LoginState extends State<Login> {
           GradientButton(
             text: 'Login',
             onPressed: () async {
-              _response = await authService.login(
+              APIResponse response = await authService.login(
                 _emailController.text,
                 _passwordController.text,
               );
-              if (!_response.success) {
+              if (response.statusCode == 200) {
                 setState(() {
-                  error = _response.error;
+                  error = response.error;
                 });
               }
             },

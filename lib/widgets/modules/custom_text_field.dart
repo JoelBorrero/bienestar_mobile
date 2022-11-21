@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final Size? size;
   final double? margin;
-  final String? Function(String value)? validator;
+  final String? Function(String? value)? validator;
   const CustomTextField({
     super.key,
     required this.controller,
@@ -38,6 +38,7 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLength: maxLength,
       obscureText: keyboardType == TextInputType.visiblePassword,
+      validator: validator,
     );
     return size == null
         ? textField

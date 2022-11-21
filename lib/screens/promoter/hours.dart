@@ -22,13 +22,17 @@ class Hours extends StatelessWidget {
           backgroundColor: theme.primaryColor,
         ),
         body: Center(
-          child: textH1("Promoter hours"),
+          child: textH1('Promoter hours'),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () =>
-              showModalBottomSheet(context: context, builder: (context) => const AddReport()),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddReport(),
+            ),
+          ),
           backgroundColor: theme.primaryColor,
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.post_add),
         ),
         drawer: drawer);
   }

@@ -9,14 +9,16 @@ TextEditingController _startDateController = TextEditingController();
 class DatePicker extends StatelessWidget {
   final DateTime date;
   final Function(DateTime) updateDate;
+  final String? Function(String? value)? validator;
   const DatePicker(
       {super.key,
       required this.date,
-      required this.updateDate});
+      required this.updateDate,
+      this.validator});
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return TextField(
+    return TextFormField(
       controller: _startDateController,
       decoration: InputDecoration(
         icon: Icon(
@@ -39,18 +41,12 @@ class DatePicker extends StatelessWidget {
           confirmText: 'Aceptar',
         );
         if (selectedDate != null) {
-          // TimeOfDay? selectedTime = await showTimePicker(
-          //   context: context,
-          //   initialTime: TimeOfDay.now(),
-          // );
-          // if (selectedTime != null) {
             updateDate(selectedDate);
             _startDateController.text =
                 '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
-          // }
         }
-        // showTimePicker(context: context, initialTime: DateTime.now().);
       },
+      validator: validator,
     );
   }
 }
