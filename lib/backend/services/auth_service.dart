@@ -20,7 +20,7 @@ class AuthService with ChangeNotifier {
     return token!;
   }
 
-  Future login(String email, String password) async {
+  Future<APIResponse> login(String email, String password) async {
     var uri = Uri.https(host, 'accounts/auth/login/');
     final resp = await http.post(
       uri,
@@ -30,11 +30,11 @@ class AuthService with ChangeNotifier {
       resp.bodyBytes,
       resp.statusCode,
     );
-    if (response.success) {
+    if (response.statusCode == 200) {
       await _saveUser(resp.body);
-      response.data = user.toString();
+      // response.data = user.toString();
     } else {
-      response.data = "Error";
+      // response.data = "Error";
     }
     return response;
   }

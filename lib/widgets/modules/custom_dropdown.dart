@@ -8,24 +8,46 @@ class CustomDropdown extends StatelessWidget {
   final List<Map<String, Object>> items;
   final dynamic value;
   final Function(dynamic) onChanged;
-  const CustomDropdown({super.key, required this.icon, required this.label, required this.items, this.value, required this.onChanged});
+  final String? Function(String? value)? validator;
+  final bool? hasInteractedByUser;
+  const CustomDropdown(
+      {super.key,
+      required this.icon,
+      required this.label,
+      required this.items,
+      this.value,
+      required this.onChanged,
+      this.validator,
+      this.hasInteractedByUser});
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 25, color: theme.primaryColorDark),
-        const SizedBox(width: 20),
-        textMedium('$label    '),
-        DropdownButton(
-            items: items.map((item) => 
-            DropdownMenuItem(
-                value: item['value'],
-                child: textMedium(item['label'] as String)
-              )).toList(),
-            value: value,
-            onChanged: ((val) => onChanged(val))),
+        Row(
+          children: [
+            Icon(icon, size: 25, color: theme.primaryColorDark),
+            const SizedBox(width: 20),
+            textMedium('$label    '),
+            DropdownButton(
+              items: items
+                  .map((item) => DropdownMenuItem(
+                      value: item['value'],
+                      child: textMedium(item['label'] as String)))
+                  .toList(),
+              value: value,
+              onChanged: ((val) => onChanged(val)),
+            ),
+          ],
+        ),
+        textSmall(
+          validator!(value) != null && (hasInteractedByUser ?? false)
+              ? validator!(value)!
+              : '',
+          color: Colors.red,
+        ),
       ],
     );
   }
