@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/utils/themes.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
 
 DateTime _now = DateTime.now();
 TextEditingController _startDateController = TextEditingController();

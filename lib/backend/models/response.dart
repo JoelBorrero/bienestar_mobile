@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 APIResponse apiResponseFromBytes(Uint8List str, int statusCode) =>
@@ -30,18 +31,20 @@ class APIResponse {
       this.count,
       this.next,
       this.previous,
-      this.results});
+      this.results,
+      this.raw
+      });
 
   final int statusCode;
-  final String? data;
-  final String? error;
+  final Object? data;
+  final String? error, raw;
 
   // Paginated responses
   final int? currentPage, pages, count;
   final String? next, previous;
   final List? results;
 
-  factory APIResponse.fromJson(Map<String, dynamic> json, int statusCode) =>
+  factory APIResponse.fromJson(Map<String, dynamic> json, int statusCode, [bool raw=false]) =>
       APIResponse(
         statusCode: statusCode,
         data: json['data'],
@@ -52,6 +55,7 @@ class APIResponse {
         next: json['next'],
         previous: json['previous'],
         results: json['results'],
+        raw: json.toString(),
       );
 
   Map<String, dynamic> toJson() => {

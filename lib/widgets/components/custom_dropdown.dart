@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
 
 class CustomDropdown extends StatelessWidget {
   final IconData icon;
@@ -8,7 +8,7 @@ class CustomDropdown extends StatelessWidget {
   final List<Map<String, Object>> items;
   final dynamic value;
   final Function(dynamic) onChanged;
-  final String? Function(String? value)? validator;
+  final String? Function(dynamic value)? validator;
   final bool? hasInteractedByUser;
   const CustomDropdown(
       {super.key,
@@ -42,12 +42,15 @@ class CustomDropdown extends StatelessWidget {
             ),
           ],
         ),
-        textSmall(
-          validator!(value) != null && (hasInteractedByUser ?? false)
-              ? validator!(value)!
-              : '',
-          color: Colors.red,
-        ),
+        if (validator!(value) != null && (hasInteractedByUser ?? false))
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: textSmall(
+              validator!(value)!,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 20),
       ],
     );
   }
