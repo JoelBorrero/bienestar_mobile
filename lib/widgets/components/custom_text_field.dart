@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/utils/themes.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -10,7 +10,6 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
   final Size? size;
-  final double? margin;
   final String? Function(String? value)? validator;
   const CustomTextField({
     super.key,
@@ -20,7 +19,6 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.maxLength,
     this.size,
-    this.margin,
     this.validator,
   });
 
@@ -32,21 +30,24 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         icon: icon != null ? Icon(icon, color: theme.primaryColorDark) : null,
         label: textMedium(label),
-        enabledBorder: inputBorder(),
+        errorMaxLines: 2,
         focusedBorder: inputBorder(),
+        enabledBorder: inputBorder(),
       ),
       keyboardType: keyboardType,
       maxLength: maxLength,
       obscureText: keyboardType == TextInputType.visiblePassword,
       validator: validator,
     );
-    return size == null
-        ? textField
-        : Container(
-            width: size!.width,
-            height: size!.height,
-            margin: EdgeInsets.symmetric(vertical: margin ?? 20),
-            child: textField,
-          );
+    return
+        // size == null? textField:
+        Container(
+      width: size?.width,
+      height: size?.height,
+      margin: size != null
+          ? const EdgeInsets.symmetric(vertical: 20)
+          : const EdgeInsets.only(bottom: 20),
+      child: textField,
+    );
   }
 }

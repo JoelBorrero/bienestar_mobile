@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:bienestar_mobile/backend/models/user.dart';
-import 'package:bienestar_mobile/backend/services/auth_service.dart';
+import 'package:bienestar_mobile/backend/services/api.dart';
 import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
 
 class MyDrawer extends StatelessWidget {
   final List items;
@@ -12,8 +12,8 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthService auth = Provider.of<AuthService>(context);
-    User user = auth.user!;
+    final api = Provider.of<API>(context);
+    User user = api.user!;
     ThemeData theme = Theme.of(context);
     String route = ModalRoute.of(context)!.settings.name!;
     return Drawer(
@@ -63,9 +63,7 @@ class MyDrawer extends StatelessWidget {
             ),
             title: textLarge('Cerrar sesión'),
             iconColor: theme.primaryColor,
-            onTap: () {
-              auth.logout();
-            },
+            onTap: () => api.logout(),
           ),
         ],
       ),

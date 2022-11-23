@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:bienestar_mobile/backend/models/user.dart';
-import 'package:bienestar_mobile/backend/services/auth_service.dart';
+import 'package:bienestar_mobile/backend/services/api.dart';
 import 'package:bienestar_mobile/screens/promoter/add_report.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:bienestar_mobile/widgets/modules/drawer.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
+import 'package:bienestar_mobile/widgets/components/drawer.dart';
 
 class Hours extends StatelessWidget {
   final MyDrawer drawer;
@@ -14,15 +13,37 @@ class Hours extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    final authService = Provider.of<AuthService>(context);
-    User user = authService.user!;
+    // final api = Provider.of<API>(context);
+    // User user = api.user!;
     return Scaffold(
         appBar: AppBar(
           title: textH1('Mis horas', dark: false),
           backgroundColor: theme.primaryColor,
         ),
-        body: Center(
-          child: textH1('Promoter hours'),
+        body: FutureBuilder(
+          future: Provider.of<API>(context, listen: false).getHours(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return RefreshIndicator(
+                  onRefresh: () async {},
+                  child: snapshot.hasData
+                      ? ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              child: ListTile(
+                                title: Text(snapshot.data[index].date),
+                                subtitle:
+                                    Text(snapshot.data[index].hours.toString()),
+                              ),
+                            );
+                          },
+                        )
+                      : const Center(child: Text('No hay horas registradas')));
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(

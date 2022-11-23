@@ -1,12 +1,12 @@
-import 'package:bienestar_mobile/backend/models/response.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:bienestar_mobile/backend/services/auth_service.dart';
+import 'package:bienestar_mobile/backend/models/response.dart';
+import 'package:bienestar_mobile/backend/services/api.dart';
 import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
-import 'package:bienestar_mobile/widgets/modules/gradient_button.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
+import 'package:bienestar_mobile/widgets/components/custom_text_field.dart';
+import 'package:bienestar_mobile/widgets/components/gradient_button.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
 
 
 class Login extends StatefulWidget {
@@ -26,7 +26,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context, listen: false);
+    final api = Provider.of<API>(context, listen: false);
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
         vertical: 80,
@@ -52,11 +52,11 @@ class _LoginState extends State<Login> {
           GradientButton(
             text: 'Login',
             onPressed: () async {
-              APIResponse response = await authService.login(
+              APIResponse response = await api.login(
                 _emailController.text,
                 _passwordController.text,
               );
-              if (response.statusCode == 200) {
+              if (response.statusCode != 200) {
                 setState(() {
                   error = response.error;
                 });

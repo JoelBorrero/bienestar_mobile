@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/utils/constants.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:bienestar_mobile/widgets/modules/gradient_button.dart';
-import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
+import 'package:bienestar_mobile/widgets/components/gradient_button.dart';
+import 'package:bienestar_mobile/widgets/components/custom_text_field.dart';
 
 class SetNewPassword extends StatefulWidget {
   final PageController controller;
@@ -39,7 +39,6 @@ class _SetNewPasswordState extends State<SetNewPassword> {
             icon: Icons.password,
             keyboardType: TextInputType.visiblePassword,
             size: const Size(300, 50),
-            margin: 10,
           ),
           CustomTextField(
             controller: _confirmPasswordController,
@@ -47,7 +46,6 @@ class _SetNewPasswordState extends State<SetNewPassword> {
             icon: Icons.password,
             keyboardType: TextInputType.visiblePassword,
             size: const Size(300, 50),
-            margin: 10,
           ),
           GradientButton(
             text: 'Validar',

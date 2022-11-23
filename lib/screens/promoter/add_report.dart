@@ -1,36 +1,37 @@
-import 'package:bienestar_mobile/utils/validators.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bienestar_mobile/backend/models/response.dart';
 import 'package:bienestar_mobile/backend/models/user.dart';
+import 'package:bienestar_mobile/backend/models/zone.dart';
 import 'package:bienestar_mobile/backend/services/api.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:bienestar_mobile/widgets/modules/custom_dropdown.dart';
-import 'package:bienestar_mobile/widgets/modules/custom_text_field.dart';
-import 'package:bienestar_mobile/widgets/modules/date_picker.dart';
-import 'package:bienestar_mobile/widgets/modules/gradient_button.dart';
+import 'package:bienestar_mobile/utils/validators.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
+import 'package:bienestar_mobile/widgets/components/custom_dropdown.dart';
+import 'package:bienestar_mobile/widgets/components/custom_text_field.dart';
+import 'package:bienestar_mobile/widgets/components/date_picker.dart';
+import 'package:bienestar_mobile/widgets/components/gradient_button.dart';
+import 'package:provider/provider.dart';
 
+bool _dataIsLoaded = false;
 final _formKey = GlobalKey<FormState>();
 bool _hasInteractedByUser = false;
 List _hours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 DateTime _date = DateTime.now();
 int? _startHour = TimeOfDay.now().hour,
     _endHour,
-    _supervisorId,
+    _supervisorId = 0,
     _wakeUpCalls,
     _peopleCalled,
     _zoneId;
 bool? _wasSupervised;
 String? _notes;
 List<User> _supervisors = [];
+List<Zone> _zones = [];
 final TextEditingController _wakeUpCallsController = TextEditingController(),
     _peopleCalledController = TextEditingController(),
     _notesController = TextEditingController();
 
 Map<String, Object?> _answers = {
-  'date': _date,
-  'start_hour': _startHour,
-  'end_hour': _endHour,
   'was_supervised': _wasSupervised,
   'supervisor': _supervisorId,
   'wake_up_calls': _wakeUpCalls,
@@ -49,7 +50,13 @@ class AddReport extends StatefulWidget {
 class _AddReportState extends State<AddReport> {
   void _onChanged(String key, dynamic value) {
     setState(() {
-      _answers[key] = value;
+      if (['date', 'start_hour', 'end_hour'].contains(key)) {
+        String dateString = '${_date.year}-${_date.month}-${_date.day}';
+        _answers['start_date'] = '$dateString $_startHour:30:00';
+        _answers['end_date'] = '$dateString $_endHour:30:00';
+      } else {
+        _answers[key] = (key == 'supervisor' && value == 0) ? null : value;
+      }
       switch (key) {
         case 'date':
           _date = value;
@@ -82,25 +89,31 @@ class _AddReportState extends State<AddReport> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-
+  void initialLoad(API api) async {
     final queryParameters = {
       'role': 'supervisor',
     };
-    Future<APIResponse> response = API.get('/accounts/', queryParameters);
-    response.then((res) {
-      if (res.statusCode == 200) {
-        setState(() {
-          _supervisors = res.results!.map((u) => User.fromJson(u)).toList();
-        });
-      }
-    });
+    APIResponse response = await api.get('/accounts/', query: queryParameters);
+    if (response.statusCode == 200) {
+      setState(() {
+        _supervisors = response.results!.map((u) => User.fromJson(u)).toList();
+      });
+    }
+    response = await api.get('/promoter/zone/', authenticate: true);
+    if (response.statusCode == 200) {
+      setState(() {
+        _zones = response.results!.map((z) => Zone.fromJson(z)).toList();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final api = Provider.of<API>(context);
+    if (!_dataIsLoaded) {
+      initialLoad(api);
+      _dataIsLoaded = true;
+    }
     if (!_hours.sublist(0, _hours.length - 1).contains(_startHour)) {
       if (_startHour! < _hours[0]) {
         _startHour = _hours[0];
@@ -115,10 +128,14 @@ class _AddReportState extends State<AddReport> {
         title: textH1('Agregar reporte', dark: false),
         backgroundColor: theme.primaryColor,
       ),
-      body: Form(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          initialLoad(api);
+        },
+        child: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
             children: [
               DatePicker(
                 date: _date,
@@ -168,31 +185,44 @@ class _AddReportState extends State<AddReport> {
                     '    ${_endHour! - _startHour!} hora${_endHour! - _startHour! > 1 ? 's' : ''}',
                     color: theme.primaryColorDark),
               ]),
-              const SizedBox(height: 10),
+              CustomDropdown(
+                icon: Icons.supervisor_account,
+                label: '¿Fue supervisado?',
+                items: const [
+                  {'value': true, 'label': 'Sí'},
+                  {'value': false, 'label': 'No'}
+                ],
+                value: _wasSupervised,
+                onChanged: (b) => _onChanged('was_supervised', b),
+                validator: ((value) => isNotEmpty(
+                    value, 'Por favor indique si fue o no supervisado')),
+                hasInteractedByUser: _hasInteractedByUser,
+              ),
               CustomDropdown(
                   icon: Icons.supervisor_account,
-                  label: '¿Fue supervisado?',
-                  items: const [
-                    {'value': true, 'label': 'Sí'},
-                    {'value': false, 'label': 'No'}
+                  label: 'Supervisor',
+                  items: [
+                    const {'value': 0, 'label': '-'},
+                    ..._supervisors
+                        .map((s) => {'value': s.id, 'label': s.firstName})
+                        .toList()
                   ],
-                  value: _wasSupervised,
-                  onChanged: (b) => _onChanged('was_supervised', b),
-                  validator: ((value) =>
-                      isNotEmpty(value, 'Por favor ingrese una')),
+                  value: _supervisorId,
+                  onChanged: (s) => _onChanged('supervisor', s),
+                  validator: ((value) => isNotEmpty(
+                      value, 'Por favor indique quién lo supervisó')),
                   hasInteractedByUser: _hasInteractedByUser),
-              // CustomDropdown(
-              //   icon: Icons.supervisor_account,
-              //   label: 'Supervisor',
-              //   items: _supervisors.isEmpty
-              //       ? []
-              //       : _supervisors
-              //           .map((s) => {'value': s.id, 'label': s.firstName})
-              //           .toList(),
-              //   value: _supervisorId,
-              //   onChanged: (s) => _onChanged('supervisor', s),
-              //   validator: ((value) => isNotEmpty(value, 'Por favor ingrese una nota')),
-              // ),
+              CustomDropdown(
+                  icon: Icons.business_outlined,
+                  label: 'Zona',
+                  items: _zones
+                      .map((z) => {'value': z.id, 'label': z.name})
+                      .toList(),
+                  value: _zoneId,
+                  onChanged: (z) => _onChanged('zone', z),
+                  validator: ((value) => isNotEmpty(
+                      value, 'Por favor ingrese la zona a reportar')),
+                  hasInteractedByUser: _hasInteractedByUser),
               CustomTextField(
                 controller: _peopleCalledController,
                 label: 'Personas a las que le hizo llamado de atención',
@@ -201,7 +231,6 @@ class _AddReportState extends State<AddReport> {
                 validator: ((value) => isNotEmpty(value,
                     'Por favor ingrese a cuántas personas les llamó la atención')),
               ),
-              const SizedBox(height: 20),
               CustomTextField(
                 controller: _wakeUpCallsController,
                 label: 'Número de llamados de atención',
@@ -210,33 +239,51 @@ class _AddReportState extends State<AddReport> {
                 validator: ((value) => isNotEmpty(value,
                     'Por favor indique a cuántas personas les hizo llamado de atención')),
               ),
-              const SizedBox(height: 20),
               CustomTextField(
                 controller: _notesController,
                 label: 'Notas',
                 icon: Icons.note_alt_outlined,
               ),
-              const SizedBox(height: 20),
               GradientButton(
-                  text: 'Enviar',
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        _hasInteractedByUser = true;
-                      });
+                text: 'Enviar',
+                onPressed: () async {
+                  if (!_hasInteractedByUser) {
+                    setState(() {
+                      _hasInteractedByUser = true;
+                    });
+                  }
+                  if (_formKey.currentState!.validate()) {
+                    APIResponse response = await api.post(
+                      '/promoter/record/',
+                      authenticate: true,
+                      body: _answers,
+                    );
+                    print(response.raw);
+                    if (response.statusCode == 201) {
                       // Reset the answers
-                      _wasSupervised = null;
-                      _supervisorId = null;
-                      _wakeUpCalls = null;
-                      _peopleCalled = null;
-                      _notes = null;
-                      _zoneId = null;
-
-                      Navigator.pop(context);
+                      // _wasSupervised = null;
+                      // _supervisorId = null;
+                      // _wakeUpCalls = null;
+                      // _peopleCalled = null;
+                      // _notes = null;
+                      // _zoneId = null;
+                      // ignore: use_build_context_synchronously
+                      // show toast
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: textMedium('Reporte enviado'),
+                          backgroundColor: theme.primaryColor,
+                        ),
+                      );
+                      // Navigator.pop(context);
                     }
-                  })
+                  }
+                },
+              )
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

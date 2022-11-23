@@ -15,11 +15,6 @@ class AuthService with ChangeNotifier {
     return _user ?? loadUser();
   }
 
-  Future<String> getToken() async {
-    final token = await _storage.read(key: 'token');
-    return token!;
-  }
-
   Future<APIResponse> login(String email, String password) async {
     var uri = Uri.https(host, 'accounts/auth/login/');
     final resp = await http.post(

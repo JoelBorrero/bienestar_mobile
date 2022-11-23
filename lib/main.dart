@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'backend/routes.dart';
-import 'backend/services/auth_service.dart';
+import 'package:bienestar_mobile/backend/services/api.dart';
 import 'package:bienestar_mobile/backend/services/wrapper.dart';
 import 'package:bienestar_mobile/utils/themes.dart';
 
@@ -15,7 +15,7 @@ class BienestarUN extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => AuthService(),
+      create: (context) => API(),
       child: MaterialApp(
         home: const Wrapper(),
         routes: AppRoutes.routes,
