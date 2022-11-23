@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:bienestar_mobile/backend/models/user.dart';
 import 'package:bienestar_mobile/backend/services/auth_service.dart';
-import 'package:bienestar_mobile/widgets/components/text_components.dart';
-import 'package:bienestar_mobile/widgets/modules/drawer.dart';
+import 'package:bienestar_mobile/widgets/atoms/text_components.dart';
+import 'package:bienestar_mobile/widgets/components/drawer.dart';
 
 class Home extends StatelessWidget {
   final MyDrawer drawer;
